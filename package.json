@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/zkaarvik/solarity-manager/issues"
   },
-  "homepage": "https://github.com/zkaarvik/solarity-manager#readme"
+  "homepage": "https://github.com/zkaarvik/solarity-manager#readme",
+  "dependencies": {
+    "express": "^4.13.3"
+  }
 }
