@@ -1,0 +1,2 @@
+/* Style required for Boostrap to function correctly with AngularJS */
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }

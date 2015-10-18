@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="en">
+<html lang="en" ng-app="solarityManager">
 <head>
       <meta charset="utf-8">
 
@@ -8,6 +8,9 @@
       <meta name="description" content="Solarity Manager Application">
       <meta name="author" content="Sunlink">
 
+      <script src="/lib/angular/angular.js"></script>
+      <script src="/lib/angular-bootstrap/ui-bootstrap.js"></script>
+      <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css">
       <link rel="stylesheet" href="css/styles.css">
 
       <!--[if lt IE 9]>
@@ -17,6 +20,16 @@
 
 <body>
     <script src="js/main.js"></script>
-    Test
+    
+
+    <!-- Content -->
+    <div ng-controller="MainController">
+        <h1>Button Pressed? {{buttonModel}}</h1>
+        <button type="button" class="btn btn-primary" ng-model="buttonModel" uib-btn-checkbox>
+            I am a button
+        </button>
+    </div>
+    <!-- End Content -->
+
 </body>
 </html>

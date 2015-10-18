@@ -1,0 +1,24 @@
+{
+  "name": "solarity-manager",
+  "description": "",
+  "main": "app.js",
+  "authors": [
+    "Zach <zkaarvik@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/zkaarvik/solarity-manager",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.7",
+    "bootstrap": "~3.3.5",
+    "angular-bootstrap": "~0.14.2"
+  }
+}
