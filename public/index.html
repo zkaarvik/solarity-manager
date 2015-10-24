@@ -2,34 +2,53 @@
 
 <html lang="en" ng-app="solarityManager">
 <head>
-      <meta charset="utf-8">
+    <meta charset="utf-8">
 
-      <title>Solarity Manager</title>
-      <meta name="description" content="Solarity Manager Application">
-      <meta name="author" content="Sunlink">
+    <title>Solarity Manager</title>
+    <meta name="description" content="Solarity Manager Application">
+    <meta name="author" content="Sunlink">
 
-      <script src="/lib/angular/angular.js"></script>
-      <script src="/lib/angular-bootstrap/ui-bootstrap.js"></script>
-      <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css">
-      <link rel="stylesheet" href="css/styles.css">
+    <script src="/lib/angular/angular.js"></script>
+    <script src="/lib/angular-bootstrap/ui-bootstrap.js"></script>
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="css/styles.css">
 
-      <!--[if lt IE 9]>
-      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-      <![endif]-->
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 </head>
 
 <body>
+    <script src="lib/angular-resource/angular-resource.js"></script>
+    <script src="js/services.js"></script>
     <script src="js/main.js"></script>
     
+    <nav class="navbar navbar-default">
+        <a class="navbar-brand" href="#">Solarity Manager</a>
+    </nav>
 
-    <!-- Content -->
-    <div ng-controller="MainController">
-        <h1>Button Pressed? {{buttonModel}}</h1>
-        <button type="button" class="btn btn-primary" ng-model="buttonModel" uib-btn-checkbox>
-            I am a button
-        </button>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Registered Solarity Devices</div>
+
+        <!-- Table -->
+        <table class="table table-hover" ng-controller="DeviceTableController">
+            <thead>
+                <tr>
+                    <th>Device ID</th>
+                    <th>Stop Number</th>
+                    <th>Last Request</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="device in devices">
+                    <td>{{device.device_id}}</td>
+                    <td>{{device.stop}}</td>
+                    <td>{{device.last_request}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <!-- End Content -->
 
 </body>
 </html>
