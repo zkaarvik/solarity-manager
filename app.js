@@ -4,6 +4,7 @@ var bodyParser  = require('body-parser')
 var app         = express();
 
 var devices     = require('./routes/devices');
+var image       = require('./routes/image');
 
 /*
  * Initialize database connection
@@ -16,13 +17,14 @@ mongoose.connect('mongodb://localhost/solarityManager', function(err) {
     }
 });
 
-// Parse application/json 
+// Parser for application/json 
 app.use(bodyParser.json());
 
 /*
  *  Routing for API Requests
  */
 app.use('/api/devices', devices);
+app.use('/api/image', image);
 
 /*
  *  Public directory contains static content

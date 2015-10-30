@@ -6,6 +6,7 @@
 - MongoDB (https://www.mongodb.org/) (Follow guide: https://docs.mongodb.org/getting-started/shell/tutorial/install-mongodb-on-windows/)
 - Python (https://www.python.org/downloads/) **DOWNLOAD VERSION _2.7_ & CHECK "ADD TO PATH" DURING INSTALL**
 - Visual Studio Express (http://www.microsoft.com/en-gb/download/details.aspx?id=44914)
+- Graphics Magic (http://www.graphicsmagick.org/)
 
 ###Getting Started:
  - Clone this repository onto your local machine
