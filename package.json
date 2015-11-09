@@ -19,9 +19,11 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "bower": "^1.6.3",
+    "bytebuffer": "^5.0.0",
     "express": "^4.13.3",
     "gm": "^1.21.1",
     "mongoose": "^4.1.11",
+    "png-js": "^0.1.1",
     "request": "^2.65.0"
   }
 }
