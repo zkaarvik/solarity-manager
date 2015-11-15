@@ -75,26 +75,7 @@ router.get('/:id', function(req, res, next) {
 
     //Convert a gdImage to EPD format
     function convertImage(pixels) {
-        //ByteBuffer size = EPD Image Size = 48,016 bytes
-        var buffer = ByteBuffer.allocate(48016);
-
-        //Write image header to buffer
-        buffer.writeUint8(0x3A);
-        buffer.writeUint8(0x01);
-        buffer.writeUint8(0xE0);
-        buffer.writeUint8(0x03);
-        buffer.writeUint8(0x20);
-        buffer.writeUint8(0x01);
-        buffer.writeUint8(0x04);
-        buffer.writeUint8(0x00);
-        buffer.writeUint8(0x00);
-        buffer.writeUint8(0x00);
-        buffer.writeUint8(0x00);
-        buffer.writeUint8(0x00);
-        buffer.writeUint8(0x00);
-        buffer.writeUint8(0x00);
-        buffer.writeUint8(0x00);
-        buffer.writeUint8(0x00);
+        var epdHeader = [0x3A, 0x01, 0xE0, 0x03, 0x20, 0x01, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
 
         //Parse image one row at a time (480 pixels)
         //For every 16 pixels (P0, P1, ... P15), assign to two intermediate bytes as follows:
@@ -147,13 +128,13 @@ router.get('/:id', function(req, res, next) {
             epdPixels = epdPixels.concat(outRow);
         }
 
-        buffer.append(epdPixels);
-
-        res.set('Content-Type', 'application/octet-stream');
-        res.send(buffer);
-
-        //buffer.flip();
-        //console.log(buffer.readUint8());
+        //Concat the header and image data and send
+        var epdFile = epdHeader.concat(epdPixels);
+        res.writeHead(200, {
+            'Content-Type': 'application/octet-stream',
+            'Content-Length': epdFile.length
+        });
+        res.end(new Buffer(epdFile, 'binary'));
     };  
 
 });
