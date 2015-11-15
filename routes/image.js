@@ -20,8 +20,8 @@ router.get('/:id', function(req, res, next) {
         }
     }, createImage);
 
-    var iWidth = 480;
-    var iHeight = 800;
+    var imgWidth = 480;
+    var imgHeight = 800;
 
     function createImage(error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -29,7 +29,7 @@ router.get('/:id', function(req, res, next) {
             //res.send(aRoutes);
 
             //Draw title
-            var image = gm(iWidth, iHeight, '#FFFFFF')
+            var image = gm(imgWidth, imgHeight, '#FFFFFF')
                 .font('impact', 96)
                 .drawText(10, 96, 'Solarity');
 
@@ -96,21 +96,61 @@ router.get('/:id', function(req, res, next) {
         buffer.writeUint8(0x00);
         buffer.writeUint8(0x00);
 
-        var x, y;
-        var aLine;
-        var aLines = [];
+        //Parse image one row at a time (480 pixels)
+        //For every 16 pixels (P0, P1, ... P15), assign to two intermediate bytes as follows:
+        //  B0 = [P6, P14, P4, P12, P2, P10, P0, P8], B1 = [P1, P9, P3, P11, P5, P13, P7, P15]
+        //Assign to 60 byte (480 pixel) output arr:
+        //  [B58, ..., B2, B0, B59 ..., B3, B1]
+        //Repeat until row complete
 
-        //Parse the image one row at a time
-        // for(y=0; y<iHeight; y++) {
-        //     aLine = [];
-        //     for(x=0; x<iWidth; x++) {
-        //         //aLine.push(image.imageColorAt(x, y));
-        //     }
-        //     aLines.push(aLine);
-        // }
-        res.send(pixels);
+        //The pixel array is in RGBA order. Each pixel is represented by 4 elements.
+        //Since image is monochrome, RGB are all the same. We can just take the red value.
+        //If the red value is less than half intensity (FF/2 = 7F) then assume black. Otherwise white
+        var intByte0, intByte1, outRow, i, j;
+        var epdPixels = [];
+        for(i=0; i<imgHeight; i++) {    //Loop through 800 rows
+            outRow = [];
 
-        
+            for(j=0; j<imgWidth; j+=16) { //Loop through 480 pixels in 16 pixel segments
+                
+                //Get first intermediate byte
+                intByte0 = "";
+                intByte0 += pixels[(i*480 + j + 6 )*4] < 0x7F ? "1" : "0";
+                intByte0 += pixels[(i*480 + j + 14)*4] < 0x7F ? "1" : "0";
+                intByte0 += pixels[(i*480 + j + 4 )*4] < 0x7F ? "1" : "0";
+                intByte0 += pixels[(i*480 + j + 12)*4] < 0x7F ? "1" : "0";
+                intByte0 += pixels[(i*480 + j + 2 )*4] < 0x7F ? "1" : "0";
+                intByte0 += pixels[(i*480 + j + 10)*4] < 0x7F ? "1" : "0";
+                intByte0 += pixels[(i*480 + j + 0 )*4] < 0x7F ? "1" : "0";
+                intByte0 += pixels[(i*480 + j + 8 )*4] < 0x7F ? "1" : "0";
+                intByte0 = parseInt(intByte0, 2);
+
+                //Get second intermediate byte
+                intByte1 = "";
+                intByte1 += pixels[(i*480 + j + 1 )*4] < 0x7F ? "1" : "0";
+                intByte1 += pixels[(i*480 + j + 9 )*4] < 0x7F ? "1" : "0";
+                intByte1 += pixels[(i*480 + j + 3 )*4] < 0x7F ? "1" : "0";
+                intByte1 += pixels[(i*480 + j + 11)*4] < 0x7F ? "1" : "0";
+                intByte1 += pixels[(i*480 + j + 5 )*4] < 0x7F ? "1" : "0";
+                intByte1 += pixels[(i*480 + j + 13)*4] < 0x7F ? "1" : "0";
+                intByte1 += pixels[(i*480 + j + 7 )*4] < 0x7F ? "1" : "0";
+                intByte1 += pixels[(i*480 + j + 15)*4] < 0x7F ? "1" : "0";
+                intByte1 = parseInt(intByte1, 2);
+
+                outRow[29 - (j/16)] = intByte0;
+                outRow[59 - (j/16)] = intByte1;
+                // if(pixels[i] < 0x7F) {
+                //     buffer.writeUint8(pixels[i]);
+                // }
+            }
+
+            epdPixels = epdPixels.concat(outRow);
+        }
+
+        buffer.append(epdPixels);
+
+        res.set('Content-Type', 'application/octet-stream');
+        res.send(buffer);
 
         //buffer.flip();
         //console.log(buffer.readUint8());
