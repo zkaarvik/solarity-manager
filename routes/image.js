@@ -4,7 +4,7 @@ var router = express.Router();
 var request = require('request');
 var gm = require('gm');
 var ByteBuffer = require('bytebuffer');
-var PNG = require('png-js');
+var PNG = require('pngjs').PNG;
 
 /* GET /image/id */
 /*
@@ -57,16 +57,29 @@ router.get('/:id', function(req, res, next) {
                 iVerticalLength += 60;
             }
 
-            //Convert image to black and white before converting to EPD
-            //image.monochrome();
-
-            image.write('/tempSolarityImg/' + sDeviceID + '.png', function(err) {
+            image.toBuffer('PNG',function (err, buffer) {
                 if (err) console.log(err);
 
-                //Decode image into array of pixels. This array will be converted into EPD format
-                //PNG.decode('/tempSolarityImg/' + sDeviceID + '.png', convertImage);
-                PNG.decode('/tempSolarityImg/realpic.png', convertImage);
-            });
+                new PNG({ filterType:4 }).parse( buffer, function(error, data) {
+                    //console.log(error, data);
+                    // res.send(data.data);
+                    // res.writeHead(200, {
+                    //     'Content-Type': 'application/octet-stream',
+                    //     'Content-Length': data.data.length
+                    // });
+                    // res.end(new Buffer(data.data, 'binary'));
+
+                    convertImage(data.data);
+                });
+            })
+
+            // image.write('/tempSolarityImg/' + sDeviceID + '.png', function(err) {
+            //     if (err) console.log(err);
+
+            //     //Decode image into array of pixels. This array will be converted into EPD format
+            //     //PNG.decode('/tempSolarityImg/' + sDeviceID + '.png', convertImage);
+            //     PNG.decode('/tempSolarityImg/realpic.png', convertImage);
+            // });
             // res.set('Content-Type', 'image/png');
             // image.stream('png').pipe(res);
         } else {
@@ -131,9 +144,9 @@ router.get('/:id', function(req, res, next) {
         var epdFile = epdHeader.concat(epdPixels);
         res.writeHead(200, {
             'Content-Type': 'application/octet-stream',
-            'Content-Length': pixels.length
+            'Content-Length': epdFile.length
         });
-        res.end(new Buffer(pixels, 'binary'));
+        res.end(new Buffer(epdFile, 'binary'));
     };  
 
 });
