@@ -58,16 +58,17 @@ router.get('/:id', function(req, res, next) {
             }
 
             //Convert image to black and white before converting to EPD
-            image.monochrome();
+            //image.monochrome();
 
             image.write('/tempSolarityImg/' + sDeviceID + '.png', function(err) {
                 if (err) console.log(err);
 
                 //Decode image into array of pixels. This array will be converted into EPD format
-                PNG.decode('/tempSolarityImg/' + sDeviceID + '.png', convertImage);
+                //PNG.decode('/tempSolarityImg/' + sDeviceID + '.png', convertImage);
+                PNG.decode('/tempSolarityImg/realpic.png', convertImage);
             });
-            //res.set('Content-Type', 'image/png');
-            //image.stream('png').pipe(res);
+            // res.set('Content-Type', 'image/png');
+            // image.stream('png').pipe(res);
         } else {
             res.send('Error requesting translink API');
         }
@@ -120,9 +121,7 @@ router.get('/:id', function(req, res, next) {
 
                 outRow[29 - (j/16)] = intByte0;
                 outRow[59 - (j/16)] = intByte1;
-                // if(pixels[i] < 0x7F) {
-                //     buffer.writeUint8(pixels[i]);
-                // }
+                
             }
 
             epdPixels = epdPixels.concat(outRow);
@@ -132,9 +131,9 @@ router.get('/:id', function(req, res, next) {
         var epdFile = epdHeader.concat(epdPixels);
         res.writeHead(200, {
             'Content-Type': 'application/octet-stream',
-            'Content-Length': epdFile.length
+            'Content-Length': pixels.length
         });
-        res.end(new Buffer(epdFile, 'binary'));
+        res.end(new Buffer(pixels, 'binary'));
     };  
 
 });
