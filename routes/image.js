@@ -49,7 +49,7 @@ router.get('/:id', function(req, res, next) {
                 image.font('tahoma', 25);
                 sTimes = "";
                 for(j = 0; j < aRoutes[i].Schedules.length; j++) {
-                    sTimes += aRoutes[i].Schedules[j].ExpectedLeaveTime + ", ";
+                    sTimes += aRoutes[i].Schedules[j].ExpectedLeaveTime.split(' ')[0] + ", ";
                 }
                 sTimes = sTimes.substring(0, sTimes.length - 2); //Trim trailing ", "
                 image.drawText(10, iVerticalLength, sTimes);
