@@ -30,15 +30,15 @@ router.get('/:id', function(req, res, next) {
 
             //Draw title
             var image = gm(imgWidth, imgHeight, '#FFFFFF')
-                .font('impact', 96)
-                .drawText(10, 96, 'Solarity');
+                .font('tahoma-bold', 78)
+                .drawText(10, 78, 'Stop ' + sDeviceID);
 
             //Draw routes
             var sRouteNumber, sRouteName, sTimes, i, j;
             var iVerticalLength = 150;
             for(i = 0; i < aRoutes.length; i++) {
                 sRouteNumber = aRoutes[i].RouteNo;
-                sRouteName = aRoutes[i].RouteName;
+                sRouteName = aRoutes[i].RouteName + " " + aRoutes[i].Direction.substring(0,1);
 
                 //Draw route number and name
                 image.font('tahoma', 30);
@@ -57,31 +57,24 @@ router.get('/:id', function(req, res, next) {
                 iVerticalLength += 60;
             }
 
-            image.toBuffer('PNG',function (err, buffer) {
-                if (err) console.log(err);
-
-                new PNG({ filterType:4 }).parse( buffer, function(error, data) {
-                    //console.log(error, data);
-                    // res.send(data.data);
-                    // res.writeHead(200, {
-                    //     'Content-Type': 'application/octet-stream',
-                    //     'Content-Length': data.data.length
-                    // });
-                    // res.end(new Buffer(data.data, 'binary'));
-
-                    convertImage(data.data);
-                });
-            })
-
-            // image.write('/tempSolarityImg/' + sDeviceID + '.png', function(err) {
+            // image.toBuffer('PNG',function (err, buffer) {
             //     if (err) console.log(err);
 
-            //     //Decode image into array of pixels. This array will be converted into EPD format
-            //     //PNG.decode('/tempSolarityImg/' + sDeviceID + '.png', convertImage);
-            //     PNG.decode('/tempSolarityImg/realpic.png', convertImage);
-            // });
-            // res.set('Content-Type', 'image/png');
-            // image.stream('png').pipe(res);
+            //     new PNG({ filterType:4 }).parse( buffer, function(error, data) {
+            //         //console.log(error, data);
+            //         // res.send(data.data);
+            //         // res.writeHead(200, {
+            //         //     'Content-Type': 'application/octet-stream',
+            //         //     'Content-Length': data.data.length
+            //         // });
+            //         // res.end(new Buffer(data.data, 'binary'));
+
+            //         convertImage(data.data);
+            //     });
+            // })
+
+            res.set('Content-Type', 'image/png');
+            image.stream('png').pipe(res);
         } else {
             res.send('Error requesting translink API');
         }
