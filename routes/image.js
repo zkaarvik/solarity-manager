@@ -36,11 +36,11 @@ router.get('/:id', function(req, res, next) {
                 .drawText(10, 78, 'Stop ' + sStopNum);
 
             //Draw routes
-            var sRouteNumber, sRouteName, sTimes, i, j;
+            var sRouteNumber, sRouteName, sTimes, sEarlyLateStatus, i, j;
             var iVerticalLength = 150;
             for(i = 0; i < aRoutes.length; i++) {
                 sRouteNumber = aRoutes[i].RouteNo;
-                sRouteName = aRoutes[i].RouteName + " " + aRoutes[i].Direction.substring(0,1);
+                sRouteName = aRoutes[i].RouteName;
 
                 //Draw route number and name
                 image.font('tahoma', 30);
@@ -48,10 +48,26 @@ router.get('/:id', function(req, res, next) {
 
                 //Draw next bus times
                 iVerticalLength += 35;
-                image.font('tahoma', 25);
+                image.font('tahoma', 23);
                 sTimes = "";
                 for(j = 0; j < aRoutes[i].Schedules.length; j++) {
-                    sTimes += aRoutes[i].Schedules[j].ExpectedLeaveTime.split(' ')[0] + ", ";
+                    switch(aRoutes[i].Schedules[j].ScheduleStatus) {
+                        case '*':
+                            sEarlyLateStatus = '';
+                        break;
+                        case '+':
+                            sEarlyLateStatus = 'early';
+                        break;
+                        case '-':
+                            sEarlyLateStatus = 'late';
+                        break;
+                        default:
+                            sEarlyLateStatus = '';
+                        break;
+                    }
+
+                    if(sEarlyLateStatus !== '') sTimes += aRoutes[i].Schedules[j].ExpectedLeaveTime.split(' ')[0] + ' (' + sEarlyLateStatus + ')' + ', ';
+                    else sTimes += aRoutes[i].Schedules[j].ExpectedLeaveTime.split(' ')[0] + ', ';
                 }
                 sTimes = sTimes.substring(0, sTimes.length - 2); //Trim trailing ", "
                 image.drawText(10, iVerticalLength, sTimes);
