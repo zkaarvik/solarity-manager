@@ -13,8 +13,10 @@ var PNG = require('pngjs').PNG;
 router.get('/:id', function(req, res, next) {
     var sDeviceID = req.params.id;
 
+    var sStopNum = "60980";
+
     request({
-        url: 'http://api.translink.ca/rttiapi/v1/stops/60980/estimates?apikey=TZNijKc6vPu5HKiNc9eK&count=3&timeframe=120',
+        url: 'http://api.translink.ca/rttiapi/v1/stops/' + sStopNum + '/estimates?apikey=TZNijKc6vPu5HKiNc9eK&count=3&timeframe=120',
         headers: {
             'accept': 'application/JSON'
         }
@@ -31,7 +33,7 @@ router.get('/:id', function(req, res, next) {
             //Draw title
             var image = gm(imgWidth, imgHeight, '#FFFFFF')
                 .font('tahoma-bold', 78)
-                .drawText(10, 78, 'Stop ' + sDeviceID);
+                .drawText(10, 78, 'Stop ' + sStopNum);
 
             //Draw routes
             var sRouteNumber, sRouteName, sTimes, i, j;
