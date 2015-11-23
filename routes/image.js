@@ -57,24 +57,24 @@ router.get('/:id', function(req, res, next) {
                 iVerticalLength += 60;
             }
 
-            // image.toBuffer('PNG',function (err, buffer) {
-            //     if (err) console.log(err);
+            image.toBuffer('PNG',function (err, buffer) {
+                if (err) console.log(err);
 
-            //     new PNG({ filterType:4 }).parse( buffer, function(error, data) {
-            //         //console.log(error, data);
-            //         // res.send(data.data);
-            //         // res.writeHead(200, {
-            //         //     'Content-Type': 'application/octet-stream',
-            //         //     'Content-Length': data.data.length
-            //         // });
-            //         // res.end(new Buffer(data.data, 'binary'));
+                new PNG({ filterType:4 }).parse( buffer, function(error, data) {
+                    //console.log(error, data);
+                    // res.send(data.data);
+                    // res.writeHead(200, {
+                    //     'Content-Type': 'application/octet-stream',
+                    //     'Content-Length': data.data.length
+                    // });
+                    // res.end(new Buffer(data.data, 'binary'));
 
-            //         convertImage(data.data);
-            //     });
-            // })
+                    convertImage(data.data);
+                });
+            })
 
-            res.set('Content-Type', 'image/png');
-            image.stream('png').pipe(res);
+            // res.set('Content-Type', 'image/png');
+            // image.stream('png').pipe(res);
         } else {
             res.send('Error requesting translink API');
         }
