@@ -29,7 +29,7 @@
 
     <div class="panel panel-default">
         <!-- Default panel contents -->
-        <div class="panel-heading">Registered Solarity Devices</div>
+        <!-- <div class="panel-heading">Registered Solarity Devices</div> -->
 
         <!-- Table -->
         <table class="table table-hover" ng-controller="DeviceTableController">
@@ -38,13 +38,25 @@
                     <th>Device ID</th>
                     <th>Stop Number</th>
                     <th>Last Request</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="device in devices">
                     <td>{{device.device_id}}</td>
-                    <td>{{device.stop}}</td>
+
+                    <td>
+                        <p ng-show="!device.isEditMode">{{device.stop}}</p>
+                        <input ng-show="device.isEditMode" type="text" class="form-control" ng-model="device.stop">
+                    </td>
+
                     <td>{{device.last_request}}</td>
+
+                    <td>
+                        <button class="btn btn-default" ng-click="onEditPressed($event)" ng-show="!device.isEditMode">Edit</button>
+                        <button class="btn btn-default" ng-click="onSavePressed($event)" ng-show="device.isEditMode">Save</button>
+                        <button class="btn btn-default" ng-click="onCancelPressed($event)" ng-show="device.isEditMode">Cancel</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
