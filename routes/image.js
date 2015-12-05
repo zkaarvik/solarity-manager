@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+var mongoose = require('mongoose');
+var Device = require('../models/Device.js');
+
 var request = require('request');
 var gm = require('gm');
 var ByteBuffer = require('bytebuffer');
@@ -12,18 +15,24 @@ var PNG = require('pngjs').PNG;
  */
 router.get('/:id', function(req, res, next) {
     var sDeviceID = req.params.id;
-
-    var sStopNum = "60980";
-
-    request({
-        url: 'http://api.translink.ca/rttiapi/v1/stops/' + sStopNum + '/estimates?apikey=TZNijKc6vPu5HKiNc9eK&count=3&timeframe=120',
-        headers: {
-            'accept': 'application/JSON'
-        }
-    }, createImage);
-
+    var sStopNum;
     var imgWidth = 480;
     var imgHeight = 800;
+
+    Device.findOne({device_id: sDeviceID}, getTranslinkData);
+
+    function getTranslinkData(err, device) {
+        if (err) return console.log(err);
+
+        sStopNum = device.stop;
+
+        request({
+            url: 'http://api.translink.ca/rttiapi/v1/stops/' + sStopNum + '/estimates?apikey=TZNijKc6vPu5HKiNc9eK&count=3&timeframe=120',
+            headers: {
+                'accept': 'application/JSON'
+            }
+        }, createImage);
+    };
 
     function createImage(error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -89,7 +98,7 @@ router.get('/:id', function(req, res, next) {
 
                     convertImage(data.data);
                 });
-            })
+            });
 
             // res.set('Content-Type', 'image/png');
             // image.stream('png').pipe(res);
