@@ -1,5 +1,5 @@
 //Declare the module
-var solarityManager = angular.module('solarityManager', ['ui.bootstrap', 'deviceServices']);
+var solarityManager = angular.module('solarityManager', ['deviceServices']);
 
 //Configure module
 
@@ -7,13 +7,16 @@ solarityManager.controller('MainController', function($scope) {
 	$scope.buttonModel = true;
 });
 
-solarityManager.controller('DeviceTableController', function($scope, Device) {
+solarityManager.controller('DeviceTableController', function($scope, $rootScope, Device) {
 	$scope.devices = [];
 	
-	//console.log(Device.query());
-	Device.query(function(response) {
-		$scope.devices = response;
-	});
+	
+
+	$scope.refreshDevices = function() {
+		Device.query(function(response) {
+			$scope.devices = response;
+		});
+	};
 
 	$scope.onEditPressed = function(event) {
 		this.device.isEditMode = true;
@@ -40,5 +43,41 @@ solarityManager.controller('DeviceTableController', function($scope, Device) {
 	$scope.onCancelPressed = function(event) {
 		this.device.isEditMode = false;
 		this.device.stop = this.device._oldStop;
+	};
+
+	$scope.onDeletePressed = function(event) {
+		this.device.isEditMode = false;
+		this.device.$delete({id:this.device._id},
+			function(response) {
+				//Remove the device from the list
+				var deviceIndex = $scope.devices.indexOf(response);
+				if(deviceIndex > -1) $scope.devices.splice(deviceIndex, 1)
+			}, function (err) {
+				//Handle error.. tbd
+		});
+	};
+
+	//Init actions
+	$scope.refreshDevices();
+	$rootScope.$on('refreshDeviceTable', function(event, args) {
+		$scope.refreshDevices();
+	})
+});
+
+solarityManager.controller('NewDeviceModalController', function($scope, $rootScope, Device) {
+	$scope.newDevice = {
+		device_id: "",
+		stop: ""
+	};
+
+	$scope.onSavePressed = function(event) {
+		Device.save($scope.newDevice, 
+			function(response) {
+				$rootScope.$emit('refreshDeviceTable', {});
+				$('#newDeviceModal').modal('hide')
+			}, function(err){
+				//Handle error.. For now assume device ID is duplicated
+				$('#newDeviceFormDeviceID').addClass('has-error');
+		});
 	};
 });
