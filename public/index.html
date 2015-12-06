@@ -45,7 +45,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="device in devices">
-                    <td width="25%">{{device.device_id}}</td>
+                    <td width="25%"><a ng-href="api/image/{{device.device_id}}?debug=true">{{device.device_id}}</a></td>
 
                     <td width="25%">
                         <p ng-show="!device.isEditMode">{{device.stop}}</p>
