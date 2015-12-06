@@ -18,11 +18,15 @@ router.get('/:id', function(req, res, next) {
     var sStopNum;
     var imgWidth = 480;
     var imgHeight = 800;
+    var queryParams = req.query
 
     Device.findOne({device_id: sDeviceID}, getTranslinkData);
 
     function getTranslinkData(err, device) {
-        if (err) return console.log(err);
+        if (err || !device) {
+            createImageDatabaseError();
+            return;
+        }
 
         sStopNum = device.stop;
 
@@ -37,7 +41,6 @@ router.get('/:id', function(req, res, next) {
     function createImage(error, response, body) {
         if (!error && response.statusCode == 200) {
             var aRoutes = JSON.parse(body);
-            //res.send(aRoutes);
 
             //Draw title
             var image = gm(imgWidth, imgHeight, '#FFFFFF')
@@ -49,7 +52,7 @@ router.get('/:id', function(req, res, next) {
             var iVerticalLength = 150;
             for(i = 0; i < aRoutes.length; i++) {
                 sRouteNumber = aRoutes[i].RouteNo;
-                sRouteName = aRoutes[i].RouteName;
+                sRouteName = aRoutes[i].Schedules[0].Destination;
 
                 //Draw route number and name
                 image.font('tahoma', 30);
@@ -84,26 +87,53 @@ router.get('/:id', function(req, res, next) {
                 iVerticalLength += 60;
             }
 
+            processCompletedImage(image);
+        } else {
+            createImageRTTIAPIError();
+        }
+    };
+
+    function createImageDatabaseError() {
+        //Error retreiving stop number for device ID
+        var image = gm(imgWidth, imgHeight, '#FFFFFF')
+                .font('tahoma-bold', 78)
+                .drawText(10, 78*1, 'ERROR!')
+                .font('tahoma-bold', 64)
+                .drawText(10, 78*2, 'Stop number')
+                .drawText(10, 78*3, 'not found')
+                .drawText(10, 78*4, 'for device');
+
+        processCompletedImage(image);
+
+    };
+
+    function createImageRTTIAPIError() {
+        //Error retreiving schedule for stop number from Translink's API
+        var image = gm(imgWidth, imgHeight, '#FFFFFF')
+                .font('tahoma-bold', 78)
+                .drawText(10, 78*1, 'ERROR!')
+                .font('tahoma-bold', 64)
+                .drawText(10, 78*2, 'Schedule')
+                .drawText(10, 78*3, 'not found')
+                .drawText(10, 78*4, 'for stop:')
+                .drawText(10, 78*5, '' + sStopNum);
+
+        processCompletedImage(image);
+    };
+
+    function processCompletedImage(image) {
+        //In debug mode, send png image as response. Otherwise process into EPD pixel data
+        if(queryParams.debug && queryParams.debug === "true") {
+            res.set('Content-Type', 'image/png');
+            image.stream('png').pipe(res);
+        } else {
             image.toBuffer('PNG',function (err, buffer) {
                 if (err) console.log(err);
 
                 new PNG({ filterType:4 }).parse( buffer, function(error, data) {
-                    //console.log(error, data);
-                    // res.send(data.data);
-                    // res.writeHead(200, {
-                    //     'Content-Type': 'application/octet-stream',
-                    //     'Content-Length': data.data.length
-                    // });
-                    // res.end(new Buffer(data.data, 'binary'));
-
                     convertImage(data.data);
                 });
             });
-
-            // res.set('Content-Type', 'image/png');
-            // image.stream('png').pipe(res);
-        } else {
-            res.send('Error requesting translink API');
         }
     };
 
