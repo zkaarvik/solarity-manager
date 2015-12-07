@@ -48,7 +48,7 @@ router.get('/:id', function(req, res, next) {
                 .drawText(10, 78, 'Stop ' + sStopNum);
 
             //Draw routes
-            var sRouteNumber, sRouteName, sTimes, sEarlyLateStatus, i, j;
+            var sRouteNumber, sRouteName, sSchedTime, sTimes, sEarlyLateStatus, i, j;
             var iVerticalLength = 150;
             for(i = 0; i < aRoutes.length; i++) {
                 sRouteNumber = aRoutes[i].RouteNo;
@@ -68,24 +68,30 @@ router.get('/:id', function(req, res, next) {
                             sEarlyLateStatus = '';
                         break;
                         case '+':
-                            sEarlyLateStatus = 'early';
+                            sEarlyLateStatus = ' (early)';
                         break;
                         case '-':
-                            sEarlyLateStatus = 'late';
+                            sEarlyLateStatus = ' (late)';
                         break;
                         default:
                             sEarlyLateStatus = '';
                         break;
                     }
 
-                    if(sEarlyLateStatus !== '') sTimes += aRoutes[i].Schedules[j].ExpectedLeaveTime.split(' ')[0] + ' (' + sEarlyLateStatus + ')' + ', ';
-                    else sTimes += aRoutes[i].Schedules[j].ExpectedLeaveTime.split(' ')[0] + ', ';
+                    sSchedTime = aRoutes[i].Schedules[j].ExpectedLeaveTime.split(' ')[0];// + sEarlyLateStatus;// + ', ';
+                    image.font('tahoma', 23).drawText(10+160*j, iVerticalLength, sSchedTime);
+                    image.font('tahoma', 14).drawText(10+160*j+20, iVerticalLength+18, sEarlyLateStatus);
+                    sTimes += sSchedTime;
                 }
                 sTimes = sTimes.substring(0, sTimes.length - 2); //Trim trailing ", "
-                image.drawText(10, iVerticalLength, sTimes);
+                //image.drawText(10, iVerticalLength, sTimes);
 
                 iVerticalLength += 60;
             }
+
+            // image.font('tahoma', 16);
+            // image.drawText(150, 795, '(E) - Early');
+            // image.drawText(250, 795, '(L) - Late');
 
             processCompletedImage(image);
         } else {
