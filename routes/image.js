@@ -80,7 +80,7 @@ router.get('/:id', function(req, res, next) {
 
                     sSchedTime = aRoutes[i].Schedules[j].ExpectedLeaveTime.split(' ')[0];// + sEarlyLateStatus;// + ', ';
                     image.font('tahoma', 23).drawText(10+160*j, iVerticalLength, sSchedTime);
-                    image.font('tahoma', 14).drawText(10+160*j+20, iVerticalLength+18, sEarlyLateStatus);
+                    image.font('tahoma', 16).drawText(10+160*j+20, iVerticalLength+22, sEarlyLateStatus);
                     sTimes += sSchedTime;
                 }
                 sTimes = sTimes.substring(0, sTimes.length - 2); //Trim trailing ", "
