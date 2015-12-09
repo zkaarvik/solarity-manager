@@ -56,7 +56,7 @@ router.get('/:id', function(req, res, next) {
 
                 //Draw route number and name
                 image.font('tahoma', 30);
-                image.drawText(10, iVerticalLength, sRouteNumber + ' - ' + sRouteName);
+                image.drawText(10, iVerticalLength, sRouteNumber.replace(/^0+/, '') + ' - ' + sRouteName);
 
                 //Draw next bus times
                 iVerticalLength += 35;
