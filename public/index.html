@@ -29,12 +29,12 @@
         <h1>Solarity Manager <small><small>Configure and Deploy Solarity Devices</small></small></h1>
     </div>
 
-    <div class="panel panel-default">
+    <!-- <div class="panel panel-default"> -->
         <!-- Default panel contents -->
         <!-- <div class="panel-heading">Registered Solarity Devices</div> -->
 
         <!-- Table -->
-        <table class="table table-hover" ng-controller="DeviceTableController">
+        <table id="deviceTable" class="table table-hover" ng-controller="DeviceTableController">
             <thead>
                 <tr>
                     <th>Device ID</th>
@@ -47,14 +47,14 @@
                 <tr ng-repeat="device in devices">
                     <td width="25%"><a ng-href="api/image/{{device.device_id}}?debug=true">{{device.device_id}}</a></td>
 
-                    <td width="25%">
+                    <td width="30%">
                         <p ng-show="!device.isEditMode">{{device.stop}}</p>
                         <input ng-show="device.isEditMode" type="text" class="form-control" ng-model="device.stop">
                     </td>
 
                     <td width="25%">{{device.last_request}}</td>
 
-                    <td width="25%">
+                    <td width="20%">
                         <button class="btn btn-default" ng-click="onEditPressed($event)" ng-show="!device.isEditMode">Edit</button>
                         <button class="btn btn-default" ng-click="onSavePressed($event)" ng-show="device.isEditMode">Save</button>
                         <button class="btn btn-default" ng-click="onCancelPressed($event)" ng-show="device.isEditMode">Cancel</button>
@@ -63,9 +63,9 @@
                 </tr>
             </tbody>
         </table>
-    </div>
+    <!-- </div> -->
 
-    <button style="width:25%;" class="btn btn-primary btn-lg center-block" data-toggle="modal" data-target="#newDeviceModal">Add a New Device</button>
+    <button style="width:25%; margin-top:1em;" class="btn btn-primary btn-lg center-block" data-toggle="modal" data-target="#newDeviceModal">Add a New Device</button>
 
     <!-- START New Device Modal -->
     <div class="modal fade" ng-controller="NewDeviceModalController" id="newDeviceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

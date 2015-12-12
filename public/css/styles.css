@@ -1,2 +1,10 @@
 /* Style required for Boostrap to function correctly with AngularJS */
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+#deviceTable {
+    width: 80%;
+    margin: auto;
+    border: 2px solid #ddd;
+    border-radius: 2px;
+    border-collapse: separate;
+}
