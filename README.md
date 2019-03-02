@@ -1,6 +1,6 @@
 # solarity-manager
 
-###Prereqs to Development:
+### Prereqs to Development:
 - Git (https://git-scm.com/) (Follow guide: https://help.github.com/articles/set-up-git/)
 - Node.js (https://nodejs.org/en/) (Includes npm)
 - MongoDB (https://www.mongodb.org/) (Follow guide: https://docs.mongodb.org/getting-started/shell/tutorial/install-mongodb-on-windows/)
@@ -8,7 +8,7 @@
 - Visual Studio Express (http://www.microsoft.com/en-gb/download/details.aspx?id=44914)
 - Graphics Magic (http://www.graphicsmagick.org/)
 
-###Getting Started:
+### Getting Started:
  - Clone this repository onto your local machine
  - Inside of the newly downloaded project directory, run `npm install` to download node module dependencies
  - You should now be able to start the project by running `node app.js`
